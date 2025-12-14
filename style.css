@@ -126,6 +126,122 @@ h1 {
     color: #666;
     line-height: 1.6;
 }
+/* Vocab Sidebar */
+.vocab-sidebar {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+.vocab-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.vocab-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 20px;
+}
+
+.export-btn {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #1a2540 0%, #2d1a3d 100%);
+    color: white;
+    border: 1px solid #3a4a6a;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.export-btn:hover {
+    background: linear-gradient(135deg, #253a5a 0%, #3d2550 100%);
+}
+
+.vocab-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.empty-message {
+    color: #999;
+    font-style: italic;
+    text-align: center;
+    padding: 20px;
+}
+
+.vocab-item {
+    padding: 12px;
+    margin-bottom: 8px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 3px solid #667eea;
+}
+
+.vocab-word {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.vocab-reading {
+    color: #667eea;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.vocab-definition {
+    color: #666;
+    font-size: 14px;
+}
+
+.vocab-delete {
+    float: right;
+    background: #ff4444;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.vocab-delete:hover {
+    background: #cc0000;
+}
+
+
+.save-word-btn {
+    position: absolute;
+    top: 15px;
+    right: 55px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.save-word-btn:hover {
+    background: #45a049;
+}
+
+.save-word-btn.saved {
+    background: #999;
+    cursor: default;
+}
+
 
 @media (max-width: 600px) {
     h1 {
