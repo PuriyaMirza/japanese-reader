@@ -64,7 +64,8 @@ async function lookupWord(word) {
     definitionPopup.classList.remove('hidden');
     
     try {
-        const response = await fetch(`https://jisho.org/api/v1/search/words?keyword=${encodeURIComponent(word)}`);
+        const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent('https://jisho.org/api/v1/search/words?keyword=' + word)}`);
+
         const data = await response.json();
         
         if (data.data && data.data.length > 0) {
