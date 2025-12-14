@@ -17,10 +17,7 @@ function loadText() {
         return;
     }
     
-    // Simple word boundary detection
-    // Split by spaces, but also try to keep multi-character sequences together
     const words = segmentText(text);
-    
     readingArea.innerHTML = '';
     
     words.forEach(word => {
@@ -37,15 +34,12 @@ function loadText() {
 }
 
 function segmentText(text) {
-    // Basic segmentation: split by common punctuation and spaces
-    // Keep words together when possible
     const segments = [];
     let currentWord = '';
     
     for (let i = 0; i < text.length; i++) {
         const char = text[i];
         
-        // Check if it's punctuation or whitespace
         if (char.match(/[\s、。！？,.!?]/)) {
             if (currentWord) {
                 segments.push(currentWord);
@@ -70,7 +64,6 @@ async function lookupWord(word) {
     definitionPopup.classList.remove('hidden');
     
     try {
-        // Call Jisho API
         const response = await fetch(`https://jisho.org/api/v1/search/words?keyword=${encodeURIComponent(word)}`);
         const data = await response.json();
         
@@ -80,4 +73,38 @@ async function lookupWord(word) {
             popupDefinition.innerHTML = '<em>No definition found. Try selecting a different word or phrase.</em>';
         }
     } catch (error) {
-        popupDefinition.innerHTML = 
+        popupDefinition.innerHTML = '<em>Error loading definition. Please check your internet connection.</em>';
+        console.error('Jisho API error:', error);
+    }
+}
+
+function displayDefinition(entry) {
+    let html = '';
+    
+    if (entry.japanese && entry.japanese.length > 0) {
+        const reading = entry.japanese[0].reading;
+        if (reading) {
+            html += `<div style="color: #667eea; font-size: 18px; margin-bottom: 10px;">${reading}</div>`;
+        }
+    }
+    
+    if (entry.senses && entry.senses.length > 0) {
+        entry.senses.slice(0, 3).forEach((sense, index) => {
+            const definitions = sense.english_definitions.join(', ');
+            const partOfSpeech = sense.parts_of_speech.join(', ');
+            
+            html += `<div style="margin-bottom: 12px;">`;
+            html += `<strong>${index + 1}.</strong> ${definitions}`;
+            if (partOfSpeech) {
+                html += `<br><small style="color: #999;">(${partOfSpeech})</small>`;
+            }
+            html += `</div>`;
+        });
+    }
+    
+    popupDefinition.innerHTML = html;
+}
+
+function hidePopup() {
+    definitionPopup.classList.add('hidden');
+}
