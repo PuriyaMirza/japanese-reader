@@ -179,7 +179,7 @@ function exportToCSV() {
     ).join('\n');
     
     const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
+    const url = `/api/jisho?keyword=${encodeURIComponent(word)}`;
     const a = document.createElement('a');
     a.href = url;
     a.download = 'japanese-vocab.csv';
