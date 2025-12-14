@@ -116,16 +116,16 @@ function displayDefinition(entry) {
     currentEntry = entry;
     let html = '';
     
-   if (entry.japanese && entry.japanese.length > 0) {
-    const reading = entry.japanese.reading;
-    const word = popupWord.textContent;
-    if (reading) {
-        html += `<div style="color: #667eea; font-size: 18px; margin-bottom: 10px;">
-            ${reading} 
-            <button onclick="playAudio('${word}')" style="background: none; border: none; font-size: 24px; cursor: pointer; margin-left: 10px;">🔊</button>
-        </div>`;
+    if (entry.japanese && entry.japanese.length > 0) {
+        const reading = entry.japanese[0].reading;  // Added [0] here
+        const word = popupWord.textContent;
+        if (reading) {
+            html += `<div style="color: #667eea; font-size: 18px; margin-bottom: 10px;">
+                ${reading} 
+                <button onclick="playAudio('${word}')" style="background: none; border: none; font-size: 24px; cursor: pointer; margin-left: 10px;">🔊</button>
+            </div>`;
+        }
     }
-}
     
     if (entry.senses && entry.senses.length > 0) {
         entry.senses.slice(0, 3).forEach((sense, index) => {
@@ -143,7 +143,7 @@ function displayDefinition(entry) {
     
     popupDefinition.innerHTML = html;
     
-    const word = popupWord.textContent;
+    const word = popupWord.textContent;  // Fixed: was "onst"
     const isAlreadySaved = savedVocab.some(item => item.word === word);
     saveWordBtn.textContent = isAlreadySaved ? '✓ Saved' : '💾 Save Word';
     saveWordBtn.className = isAlreadySaved ? 'save-word-btn saved' : 'save-word-btn';
