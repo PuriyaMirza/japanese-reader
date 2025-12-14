@@ -78,6 +78,25 @@ async function lookupWord(word) {
     }
 }
 
+async function playAudio(text) {
+  try {
+    const response = await fetch('/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    
+    const data = await response.json();
+    
+    // Google returns base64 encoded audio
+    const audio = new Audio('data:audio/mp3;base64,' + data.audioContent);
+    audio.play();
+  } catch (error) {
+    console.error('Audio playback failed:', error);
+  }
+}
+
+
 function hidePopup() {
     definitionPopup.classList.add('hidden');
 }
