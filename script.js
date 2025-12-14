@@ -64,7 +64,7 @@ async function lookupWord(word) {
     definitionPopup.classList.remove('hidden');
     
     try {
-        const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent('https://jisho.org/api/v1/search/words?keyword=' + word)}`);
+        const response = await fetch(`/api/jisho?keyword=${encodeURIComponent(word)}`);
         const data = await response.json();
         
         if (data.data && data.data.length > 0) {
@@ -116,12 +116,16 @@ function displayDefinition(entry) {
     currentEntry = entry;
     let html = '';
     
-    if (entry.japanese && entry.japanese.length > 0) {
-        const reading = entry.japanese[0].reading;
-        if (reading) {
-            html += `<div style="color: #667eea; font-size: 18px; margin-bottom: 10px;">${reading}</div>`;
-        }
+   if (entry.japanese && entry.japanese.length > 0) {
+    const reading = entry.japanese.reading;
+    const word = popupWord.textContent;
+    if (reading) {
+        html += `<div style="color: #667eea; font-size: 18px; margin-bottom: 10px;">
+            ${reading} 
+            <button onclick="playAudio('${word}')" style="background: none; border: none; font-size: 24px; cursor: pointer; margin-left: 10px;">🔊</button>
+        </div>`;
     }
+}
     
     if (entry.senses && entry.senses.length > 0) {
         entry.senses.slice(0, 3).forEach((sense, index) => {
@@ -187,22 +191,24 @@ function deleteVocab(index) {
     renderVocabList();
 }
 
+
 function exportToCSV() {
     if (savedVocab.length === 0) {
         alert('No vocab to export!');
         return;
     }
     
-    const csv = savedVocab.map(item => 
+    const csv = 'Word,Reading,Definition\n' + savedVocab.map(item => 
         `"${item.word}","${item.reading}","${item.definition}"`
     ).join('\n');
     
     const blob = new Blob([csv], { type: 'text/csv' });
-    const url = `/api/jisho?keyword=${encodeURIComponent(word)}`;
+    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = 'japanese-vocab.csv';
     a.click();
+    URL.revokeObjectURL(url);
 }
 
 renderVocabList();
