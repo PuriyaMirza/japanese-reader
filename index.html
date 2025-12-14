@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japanese Reading Practice</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📖 Japanese Reader</h1>
+        
+        <div class="input-section">
+            <textarea id="japanese-input" placeholder="Paste Japanese text here..."></textarea>
+            <button id="load-text">Load Text</button>
+        </div>
+
+        <div id="reading-area" class="reading-area"></div>
+
+        <div id="definition-popup" class="definition-popup hidden">
+            <div class="popup-content">
+                <button id="close-popup">✕</button>
+                <h3 id="popup-word"></h3>
+                <p id="popup-definition"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
