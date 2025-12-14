@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
     min-height: 100vh;
     padding: 20px;
 }
@@ -46,18 +46,20 @@ h1 {
     width: 100%;
     margin-top: 10px;
     padding: 12px;
-    background: #667eea;
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
     color: white;
-    border: none;
+    border: 1px solid #404040;
     border-radius: 8px;
     font-size: 16px;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.3s;
 }
 
 #load-text:hover {
-    background: #5568d3;
+    background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
+    border-color: #505050;
 }
+
 
 .reading-area {
     background: white;
