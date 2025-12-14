@@ -58,7 +58,6 @@ function segmentText(text) {
     return segments;
 }
 
-
 async function lookupWord(word) {
     popupWord.textContent = word;
     popupDefinition.innerHTML = '<em>Loading...</em>';
@@ -66,7 +65,6 @@ async function lookupWord(word) {
     
     try {
         const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent('https://jisho.org/api/v1/search/words?keyword=' + word)}`);
-
         const data = await response.json();
         
         if (data.data && data.data.length > 0) {
@@ -80,7 +78,23 @@ async function lookupWord(word) {
     }
 }
 
+function hidePopup() {
+    definitionPopup.classList.add('hidden');
+}
+
+// Vocab Saver Feature
+let savedVocab = JSON.parse(localStorage.getItem('savedVocab')) || [];
+let currentEntry = null;
+
+const saveWordBtn = document.getElementById('save-word');
+const exportBtn = document.getElementById('export-vocab');
+const vocabList = document.getElementById('vocab-list');
+
+saveWordBtn.addEventListener('click', saveCurrentWord);
+exportBtn.addEventListener('click', exportToCSV);
+
 function displayDefinition(entry) {
+    currentEntry = entry;
     let html = '';
     
     if (entry.japanese && entry.japanese.length > 0) {
@@ -105,8 +119,71 @@ function displayDefinition(entry) {
     }
     
     popupDefinition.innerHTML = html;
+    
+    const word = popupWord.textContent;
+    const isAlreadySaved = savedVocab.some(item => item.word === word);
+    saveWordBtn.textContent = isAlreadySaved ? '✓ Saved' : '💾 Save Word';
+    saveWordBtn.className = isAlreadySaved ? 'save-word-btn saved' : 'save-word-btn';
 }
 
-function hidePopup() {
-    definitionPopup.classList.add('hidden');
+function saveCurrentWord() {
+    if (!currentEntry) return;
+    
+    const word = popupWord.textContent;
+    const reading = currentEntry.japanese?.[0]?.reading || '';
+    const definition = currentEntry.senses?.[0]?.english_definitions.join(', ') || '';
+    
+    if (savedVocab.some(item => item.word === word)) {
+        return;
+    }
+    
+    const vocabItem = { word, reading, definition, date: new Date().toISOString() };
+    savedVocab.push(vocabItem);
+    localStorage.setItem('savedVocab', JSON.stringify(savedVocab));
+    
+    renderVocabList();
+    saveWordBtn.textContent = '✓ Saved';
+    saveWordBtn.className = 'save-word-btn saved';
 }
+
+function renderVocabList() {
+    if (savedVocab.length === 0) {
+        vocabList.innerHTML = '<p class="empty-message">No saved words yet. Click "Save Word" when you look up a word!</p>';
+        return;
+    }
+    
+    vocabList.innerHTML = savedVocab.map((item, index) => `
+        <div class="vocab-item">
+            <button class="vocab-delete" onclick="deleteVocab(${index})">Delete</button>
+            <div class="vocab-word">${item.word}</div>
+            <div class="vocab-reading">${item.reading}</div>
+            <div class="vocab-definition">${item.definition}</div>
+        </div>
+    `).join('');
+}
+
+function deleteVocab(index) {
+    savedVocab.splice(index, 1);
+    localStorage.setItem('savedVocab', JSON.stringify(savedVocab));
+    renderVocabList();
+}
+
+function exportToCSV() {
+    if (savedVocab.length === 0) {
+        alert('No vocab to export!');
+        return;
+    }
+    
+    const csv = savedVocab.map(item => 
+        `"${item.word}","${item.reading}","${item.definition}"`
+    ).join('\n');
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'japanese-vocab.csv';
+    a.click();
+}
+
+renderVocabList();
