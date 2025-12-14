@@ -1,15 +1,3 @@
-// Hardcoded test dictionary for Phase 1
-const testDictionary = {
-    'こんにちは': 'Hello, Good afternoon',
-    'ありがとう': 'Thank you',
-    '日本': 'Japan',
-    '勉強': 'Study',
-    'です': 'is, am, are (polite copula)',
-    '私': 'I, me',
-    'これ': 'this',
-    '本': 'book'
-};
-
 const loadButton = document.getElementById('load-text');
 const japaneseInput = document.getElementById('japanese-input');
 const readingArea = document.getElementById('reading-area');
@@ -29,34 +17,67 @@ function loadText() {
         return;
     }
     
-    const characters = text.split('');
+    // Simple word boundary detection
+    // Split by spaces, but also try to keep multi-character sequences together
+    const words = segmentText(text);
+    
     readingArea.innerHTML = '';
     
-    characters.forEach(char => {
-        if (char.trim() === '') {
-            readingArea.appendChild(document.createTextNode(char));
+    words.forEach(word => {
+        if (word.trim() === '') {
+            readingArea.appendChild(document.createTextNode(word));
         } else {
             const span = document.createElement('span');
             span.className = 'word';
-            span.textContent = char;
-            span.addEventListener('click', () => showDefinition(char));
+            span.textContent = word;
+            span.addEventListener('click', () => lookupWord(word));
             readingArea.appendChild(span);
         }
     });
 }
 
-function showDefinition(word) {
-    popupWord.textContent = word;
+function segmentText(text) {
+    // Basic segmentation: split by common punctuation and spaces
+    // Keep words together when possible
+    const segments = [];
+    let currentWord = '';
     
-    if (testDictionary[word]) {
-        popupDefinition.textContent = testDictionary[word];
-    } else {
-        popupDefinition.textContent = 'Definition not found (API integration coming in Phase 2!)';
+    for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        
+        // Check if it's punctuation or whitespace
+        if (char.match(/[\s、。！？,.!?]/)) {
+            if (currentWord) {
+                segments.push(currentWord);
+                currentWord = '';
+            }
+            segments.push(char);
+        } else {
+            currentWord += char;
+        }
     }
     
-    definitionPopup.classList.remove('hidden');
+    if (currentWord) {
+        segments.push(currentWord);
+    }
+    
+    return segments;
 }
 
-function hidePopup() {
-    definitionPopup.classList.add('hidden');
-}
+async function lookupWord(word) {
+    popupWord.textContent = word;
+    popupDefinition.innerHTML = '<em>Loading...</em>';
+    definitionPopup.classList.remove('hidden');
+    
+    try {
+        // Call Jisho API
+        const response = await fetch(`https://jisho.org/api/v1/search/words?keyword=${encodeURIComponent(word)}`);
+        const data = await response.json();
+        
+        if (data.data && data.data.length > 0) {
+            displayDefinition(data.data[0]);
+        } else {
+            popupDefinition.innerHTML = '<em>No definition found. Try selecting a different word or phrase.</em>';
+        }
+    } catch (error) {
+        popupDefinition.innerHTML = 
