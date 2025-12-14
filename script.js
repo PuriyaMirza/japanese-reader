@@ -34,29 +34,14 @@ function loadText() {
 }
 
 function segmentText(text) {
-    const segments = [];
-    let currentWord = '';
+    // Use TinySegmenter for proper Japanese word segmentation
+    const segmenter = new TinySegmenter();
+    const segments = segmenter.segment(text);
     
-    for (let i = 0; i < text.length; i++) {
-        const char = text[i];
-        
-        if (char.match(/[\s、。！？,.!?]/)) {
-            if (currentWord) {
-                segments.push(currentWord);
-                currentWord = '';
-            }
-            segments.push(char);
-        } else {
-            currentWord += char;
-        }
-    }
-    
-    if (currentWord) {
-        segments.push(currentWord);
-    }
-    
-    return segments;
+    // Filter out empty segments and return
+    return segments.filter(segment => segment.trim() !== '');
 }
+
 
 async function lookupWord(word) {
     popupWord.textContent = word;
