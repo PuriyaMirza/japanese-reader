@@ -112,6 +112,47 @@ const vocabList = document.getElementById('vocab-list');
 saveWordBtn.addEventListener('click', saveCurrentWord);
 exportBtn.addEventListener('click', exportToCSV);
 
+const importInput = document.getElementById('import-vocab');
+importInput.addEventListener('change', handleImportCSV);
+
+function handleImportCSV(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    const text = e.target.result;
+    const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+
+    // Skip header if present
+    if (lines[0].toLowerCase().includes('word')) {
+      lines.shift();
+    }
+
+    lines.forEach(line => {
+      const parts = line.split(',').map(p => p.replace(/^"|"$/g, '').trim());
+      const [word, reading, definition] = parts;
+
+      if (!word) return;
+      if (savedVocab.some(item => item.word === word)) return;
+
+      savedVocab.push({
+        word,
+        reading: reading || '',
+        definition: definition || '',
+        date: new Date().toISOString()
+      });
+    });
+
+    localStorage.setItem('savedVocab', JSON.stringify(savedVocab));
+    renderVocabList();
+    importInput.value = '';
+  };
+
+  reader.readAsText(file);
+}
+
+
 function displayDefinition(entry) {
     currentEntry = entry;
     let html = '';
