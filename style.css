@@ -165,6 +165,21 @@ h1 {
     background: linear-gradient(135deg, #253a5a 0%, #3d2550 100%);
 }
 
+.import-label {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #1a2540 0%, #2d1a3d 100%);
+    color: white;
+    border: 1px solid #3a4a6a;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.import-label:hover {
+    background: linear-gradient(135deg, #253a5a 0%, #3d2550 100%);
+}
+
 .vocab-list {
     max-height: 300px;
     overflow-y: auto;
