@@ -20,7 +20,9 @@
         <div id="vocab-sidebar" class="vocab-sidebar">
             <div class="vocab-header">
                 <h3>📚 Saved Vocab</h3>
-                <button id="export-vocab" class="export-btn">Export CSV</button>
+                <button id="export-vocab">Export CSV</button>
+                <label for="import-vocab" class="import-label">Import CSV</label>
+                <input id="import-vocab" type="file" accept=".csv" style="display:none;">
             </div>
             <div id="vocab-list" class="vocab-list">
                 <p class="empty-message">No saved words yet. Click "Save Word" when you look up a word!</p>
